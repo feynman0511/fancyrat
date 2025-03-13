@@ -1,0 +1,183 @@
+@charset "UTF-8";    /*ページの文字コードを指定*/
+
+body{
+    font-family: 'Hiragino Kaku Gothic Pro','Meiryo',sans-serif;    /*フォント指定、順番は優先順位*/
+    font-size: 16px;    /*フォントサイズ指定*/
+    border-top: 25px solid rgb(231, 134, 15) !important;    /*ページ上部にラインを引く。*/
+    border-top: 100%;
+}
+
+.title h1{
+    font-size: 28px;
+    text-align: center;
+    font-weight: bold;
+    margin-top: 40px;
+    margin-bottom: 30px;
+}
+
+.intro{
+    text-align: center;
+}
+
+.inner{
+    width: 1200px;
+    margin: 0 auto;;
+}
+
+.header ul{
+    display: flex;    /*リストを横並びにできる*/
+    margin-bottom: 20px;
+}
+
+.header ul li{
+    width: 200px;    /*ピクセルで分割*/
+    padding: 8px;
+    text-align: center;
+    border-right: 1px solid rgb(201, 197, 197);    /*リストの区切り線を入れる*/
+}
+
+.header ul li:first-child{    /*リスト要素の最初を選ぶ*/
+    border-left: 1px solid rgb(201, 197, 197);
+}
+
+.header a{
+    text-decoration:none;
+    color: black;
+}
+
+.header ul li a{
+    display: block;    /*リスト幅全体でリンクに飛べるように*/
+}
+
+.header_img{
+    text-align: center;
+}
+
+.header_img img{
+    display: inline-block;
+    width: 1200px;
+}
+
+.abouts h3 {
+    font-size: 24px;
+    text-align: center;
+    font-weight: bold;
+    padding-top: 50px;
+    padding-bottom: 30px;
+}
+
+
+.intro p {
+    font-size: 18px;
+    width: 800px;
+    text-align: left;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.7em;
+    padding-bottom: 60px;
+}
+
+.ce_img {
+    text-align: center;
+}
+
+.ce_img img {
+    display: inline-block;
+    width: 600px;
+}
+
+.container2 .ce_img .cagename{
+    font-size: 24px;
+    text-align: left;
+    font-weight: bold;
+    margin-left: 0px;;
+    margin-bottom: -10px;
+}
+
+.container2{
+    display: flex;
+}
+
+.container2 .dis h4{
+    font-size: 24px;
+    text-align: left;
+    font-weight: bold;
+    margin-left: 40px;
+    margin-right: 60px;
+    margin-bottom: 25px;
+}
+
+.container2 .ce_img img{
+    margin-left: 0px;
+    margin-top: 25px;
+}
+
+.container2 .dis .item{
+    font-weight: bold;
+    font-size: 18px;
+    margin-bottom: 10px;
+    margin-left: 60px;
+    margin-right: 60px;
+}
+
+.container2 .dis .item2{
+    font-size: 18px;
+    margin-bottom: 17px;
+    line-height: 2.2em;
+    margin-left: 60px;
+    margin-right: 40px;
+}
+
+.container2 a{
+    color: rgb(0, 0, 0);
+}
+
+
+.app{
+    text-align: center;
+    margin-top: -6px;
+    margin-bottom: 60px;
+}
+
+.side {
+    margin-top: 60px;
+}
+
+.side ul {
+    width: 600px;
+    display: flex;
+    margin-bottom: 20px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.side ul li {
+    width: 300px;
+    padding: 8px;
+    text-align: center;
+    font-size: 20px;
+    border-right: 1px solid rgb(201, 197, 197);
+}
+
+.side ul li:first-child {
+    /*リスト要素の最初を選ぶ*/
+    border-left: 1px solid rgb(201, 197, 197);
+}
+
+.side a{
+    text-decoration: none;
+    color: black;
+}
+
+.footer {
+    margin-top: 40px;
+}
+
+
+
+.copy {
+    text-align: center;
+    margin-bottom: 0px;
+    background: rgb(231, 134, 15);
+    padding: 7px;
+}

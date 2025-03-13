@@ -1,0 +1,61 @@
+@charset "UTF-8";    /*ページの文字コードを指定*/
+
+body{
+    font-family: 'Hiragino Kaku Gothic Pro','Meiryo',sans-serif;    /*フォント指定、順番は優先順位*/
+    font-size: 16px;    /*フォントサイズ指定*/
+    border-top: 25px solid rgb(231, 134, 15) !important;    /*ページ上部にラインを引く。*/
+}
+
+.title h1{
+    font-size: 28px;
+    text-align: center;
+    font-weight: bold;
+    margin-top: 40px;
+    margin-bottom: 30px;
+}
+
+.intro{
+    text-align: center;
+}
+
+.inner{
+    width: 1200px;
+    margin: 0 auto;;
+}
+
+.header ul{
+    display: flex;    /*リストを横並びにできる*/
+    margin-bottom: 20px;
+}
+
+.header ul li{
+    width: 200px;    /*ピクセルで分割*/
+    padding: 8px;
+    text-align: center;
+    border-right: 1px solid rgb(201, 197, 197);    /*リストの区切り線を入れる*/
+}
+
+.header ul li:first-child{    /*リスト要素の最初を選ぶ*/
+    border-left: 1px solid rgb(201, 197, 197);
+}
+
+a{
+    text-decoration: none;    /*リンクのアンダーバーを消す*/
+    color: black;
+}
+
+.header ul li a{
+    display: block;    /*リスト幅全体でリンクに飛べるように*/
+}
+
+.header_img{
+    text-align: center;
+}
+
+.saku h2 {
+    text-align: center;
+    font-weight: bold;
+    font-size: 40px;
+    margin-bottom: 20px;
+    margin-top: 60px;
+}

@@ -1,0 +1,215 @@
+import streamlit as st
+import pandas as pd
+import altair as alt
+
+# カスタムタイトル（INOUEだけ強調）
+st.markdown(
+    """
+    <style>
+    h1 {
+        font-family: 'Times New Roman', serif;
+        font-size: 45px;
+        font-weight: bold;
+        color: crimson;
+        text-align: center;
+        white-space: nowrap;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
+# カスタムタイトル（INOUEだけ強調）
+
+
+
+st.title('Image Quality Measurement App')
+
+st.markdown('Developed by INOUE')
+# st.markdown(
+#     "<h1>"
+#     "<span style='color:crimson;'>I</span>nnovative "
+#     "<span style='color:crimson;'>N</span>umerical "
+#     "<span style='color:crimson;'>O</span>ptimized "
+#     "<span style='color:crimson;'>U</span>nique "
+#     "<span style='color:crimson;'>E</span>xperience Apps"
+#     "</h1>",
+#     unsafe_allow_html=True
+# )
+
+# ファイルアップロードUI
+st.markdown("### 📂 csvファイルをドラッグ&ドロップしてください")
+uploaded_file = st.file_uploader("ファイルを選択", type=["csv"])
+
+# プルダウンメニューで選択
+selected_option = st.selectbox(
+    "グラフ表示オプションを選択",
+    ["dLstr", "BG", "dE"]
+)
+
+
+# ------------------------------------------------------------------------------
+# サイドバー設定
+st.sidebar.header("表示範囲の設定")
+
+# 各オプションに応じたスライダー設定
+if selected_option == "dLstr":
+    # dLstr: 横軸0~400、縦軸0~10
+    x_min, x_max = st.sidebar.slider("X軸の範囲 (Pitch/mm)", 0, 400, (0, 400))
+    y_min, y_max = st.sidebar.slider("Y軸の範囲 (dLstr)", 0.0, 10.0, (0.0, 10.0))
+elif selected_option == "BG":
+    # BG: 横軸0~100、縦軸0~10
+    x_min, x_max = st.sidebar.slider("X軸の範囲 (Pitch)", 0, 100, (0, 100))
+    y_min, y_max = st.sidebar.slider("Y軸の範囲 (BG)", 0.0, 10.0, (0.0, 10.0))
+elif selected_option == "dE":
+    # dE: 横軸0~100、縦軸0~10
+    x_min, x_max = st.sidebar.slider("X軸の範囲 (Pitch)", 0, 100, (0, 100))
+    y_min, y_max = st.sidebar.slider("Y軸の範囲 (dE)", 0.0, 10.0, (0.0, 10.0))
+
+if uploaded_file is not None:
+    try:
+        # CSV読み込み
+        df = pd.read_csv(uploaded_file, header=None)
+
+# ------------------------------------------------------------------------------
+# 以下dLstr
+
+        if selected_option == "dLstr":
+            # A列で"Position[mm]"のセルを探す
+            pos_index = df[df.iloc[:, 0] == "Position[mm]"].index
+            if len(pos_index) == 0:
+                raise ValueError("A列に 'Position[mm]' が見つかりませんでした。")
+            start_x = pos_index[0] + 1
+
+            # A列の数値が続く範囲を取得
+            x_vals = pd.to_numeric(df.iloc[start_x:, 0], errors='coerce')
+            x_data = x_vals[x_vals.notna()]
+
+            # E列で"V"のセルを探す
+            v_index = df[df.iloc[:, 4] == "V"].index
+            if len(v_index) == 0:
+                raise ValueError("E列に 'V' が見つかりませんでした。")
+            start_y = v_index[0] + 1
+
+            # E列の数値が続く範囲を取得
+            y_vals = pd.to_numeric(df.iloc[start_y:, 4], errors='coerce')
+            y_data = y_vals[y_vals.notna()]
+
+            # 長さを合わせてDataFrameにまとめる（短い方に合わせる）
+            min_len = min(len(x_data), len(y_data))
+            data = pd.DataFrame({
+                'X': x_data.iloc[:min_len].values,
+                'Y': y_data.iloc[:min_len].values
+            })
+
+            # 範囲でフィルター（データ上限を無視）
+            filtered_data = data[(data['X'] >= x_min) & (data['X'] <= x_max) &
+                                 (data['Y'] >= y_min) & (data['Y'] <= y_max)]
+
+            # グラフ作成
+            chart = alt.Chart(filtered_data).mark_line(opacity=0.8,clip=True).encode(
+                x=alt.X('X', title='Pitch / mm', scale=alt.Scale(domain=[x_min, x_max])),
+                y=alt.Y('Y', title='dLstr', scale=alt.Scale(domain=[y_min, y_max]))
+            ).properties(
+                width=700,
+                height=400
+            ).interactive()
+
+            st.altair_chart(chart)
+
+# ------------------------------------------------------------------------------
+# 以下BG
+
+        elif selected_option == "BG":
+            # I列で"Pitch[mm]"のセルを探す
+            pitch_index = df[df.iloc[:, 8] == "Pitch[mm]"].index
+            if len(pitch_index) == 0:
+                raise ValueError("I列に 'Pitch[mm]' が見つかりませんでした。")
+            start_x = pitch_index[0] + 1
+
+            # I列の数値が続く範囲を取得（横軸）
+            x_vals = pd.to_numeric(df.iloc[start_x:, 8], errors='coerce')
+            x_data = x_vals[x_vals.notna()]
+
+            # R列で"B.G."のセルを探す
+            bg_index = df[df.iloc[:, 17] == "B.G."].index
+            if len(bg_index) == 0:
+                raise ValueError("R列に 'B.G.' が見つかりませんでした。")
+            start_y = bg_index[0] + 1
+
+            # R列の数値が続く範囲を取得（縦軸）
+            y_vals = pd.to_numeric(df.iloc[start_y:, 17], errors='coerce')
+            y_data = y_vals[y_vals.notna()]
+
+            # 長さを合わせてDataFrameにまとめる（短い方に合わせる）
+            min_len = min(len(x_data), len(y_data))
+            data = pd.DataFrame({
+                'X': x_data.iloc[:min_len].values,
+                'Y': y_data.iloc[:min_len].values
+            })
+
+            # 範囲でフィルター（データ上限を無視）
+            filtered_data = data[(data['X'] >= x_min) & (data['X'] <= x_max) &
+                                 (data['Y'] >= y_min) & (data['Y'] <= y_max)]
+
+            # グラフ作成
+            chart = alt.Chart(filtered_data).mark_line().encode(
+                x=alt.X('X', title='Pitch / mm', scale=alt.Scale(domain=[x_min, x_max])),
+                y=alt.Y('Y', title='BG', scale=alt.Scale(domain=[y_min, y_max]))
+            ).properties(
+                width=700,
+                height=400
+            ).interactive()
+
+            st.altair_chart(chart)
+
+# ------------------------------------------------------------------------------
+# 以下dE
+
+        elif selected_option == "dE":
+            # I列で"Pitch[mm]"のセルを探す
+            pitch_index = df[df.iloc[:, 8] == "Pitch[mm]"].index
+            if len(pitch_index) == 0:
+                raise ValueError("I列に 'Pitch[mm]' が見つかりませんでした。")
+            start_x = pitch_index[0] + 1
+
+            # I列の数値が続く範囲を取得（横軸）
+            x_vals = pd.to_numeric(df.iloc[start_x:, 8], errors='coerce')
+            x_data = x_vals[x_vals.notna()]
+
+            # S列で"P_dE"のセルを探す
+            de_index = df[df.iloc[:, 18] == "P_dE"].index
+            if len(de_index) == 0:
+                raise ValueError("S列に 'P_dE' が見つかりませんでした。")
+            start_y = de_index[0] + 1
+
+            # S列の数値が続く範囲を取得（縦軸）
+            y_vals = pd.to_numeric(df.iloc[start_y:, 18], errors='coerce')
+            y_data = y_vals[y_vals.notna()]
+
+            # 長さを合わせてDataFrameにまとめる（短い方に合わせる）
+            min_len = min(len(x_data), len(y_data))
+            data = pd.DataFrame({
+                'X': x_data.iloc[:min_len].values,
+                'Y': y_data.iloc[:min_len].values
+            })
+
+            # 範囲でフィルター（データ上限を無視）
+            filtered_data = data[(data['X'] >= x_min) & (data['X'] <= x_max) &
+                                 (data['Y'] >= y_min) & (data['Y'] <= y_max)]
+
+            # グラフ作成
+            chart = alt.Chart(filtered_data).mark_line().encode(
+                x=alt.X('X', title='Pitch / mm', scale=alt.Scale(domain=[x_min, x_max])),
+                y=alt.Y('Y', title='dE', scale=alt.Scale(domain=[y_min, y_max]))
+            ).properties(
+                width=700,
+                height=400
+            ).interactive()
+
+            st.altair_chart(chart)
+
+    except Exception as e:
+        st.error(f"❌ 有効なCSVファイルを読み込んでください。エラー内容: {str(e)}")
+else:
+    st.info("📄 対応形式: CSVファイル（.csv）")
